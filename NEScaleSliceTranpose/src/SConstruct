@@ -1,0 +1,42 @@
+import SCons
+import os
+
+env = Environment()
+
+# Compiler flags to set
+env.Append(CCFLAGS = ['-Wall'])
+env.Append(CCFLAGS = ['-O3', '-g0'])
+env.Append(CCFLAGS = ['-mtune=cortex-a53'])
+env.Append(CCFLAGS = ['-march=armv8-a+simd'])
+env.Append(CCFLAGS = ['-ftree-vectorize'])
+env.Append(CCFLAGS = ['-std=c++11'])
+
+# Add include paths
+env.Append(CPPPATH = ['/usr/include'])
+env.Append(CPPPATH = ['/usr/include/aarch64-linux-gnu/include'])
+env.Append(CPPPATH = ['/usr/lib/include/aarch64-linux-gnu/include/c++/8.3.0'])
+env.Append(CPPPATH = ['/home/developer/src/ComputeLibrary'])
+env.Append(CPPPATH = ['/home/developer/src/ComputeLibrary/include'])
+
+# Add library paths
+env.Append(LIBPATH = ['/lib/'])
+env.Append(LIBPATH = ['/usr/lib/'])
+env.Append(LIBPATH = ['/usr/lib/aarch64-linux-gnu/'])
+
+# Add libraries
+env.Append(LIBS = ['pthread'])
+env.Append(LIBS = ['arm_compute'])
+env.Append(LIBS = ['arm_compute_core'])
+env.Append(LIBS = ['arm_compute_graph'])
+
+# Change default Compiler
+compiler_prefix = 'aarch64-linux-gnu-'
+env['CC'] = compiler_prefix + 'gcc'
+env['CXX'] = compiler_prefix + 'g++'
+env['LD'] = compiler_prefix + 'g++'
+env['AR'] = compiler_prefix + 'ar'
+env['STRIP'] = compiler_prefix + 'strip'
+
+sources = ['main.cc']
+sources.append(['GraphUtils.o', 'CommonGraphOptions.o', 'Utils.o'])
+env.Program(target = 'NEScaleSliceTranspose.elf', source = sources)
